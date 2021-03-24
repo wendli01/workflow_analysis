@@ -1,6 +1,5 @@
 # Methods for automatic Machine-Learning Workflow Analysis
 
----
 
 This repository accompanies the ECML-PKDD paper [Methods for automatic Machine-Learning Workflow Analysis]().
 
@@ -11,7 +10,6 @@ If you use code or any results in this repository, please cite:
 
 ## Installation
 
----
 
 Installation via the provided conda envirionment is encouraged.
 
@@ -38,7 +36,6 @@ While datasets are downloaded automatically in the notebooks using them, [NAS-be
 
 ## Use
 
----
 
 All models and transformers are implemented as `sklearn` Estimators.
 
