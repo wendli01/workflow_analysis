@@ -5,7 +5,7 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - cudatoolkit=11.0.3
+  - cudatoolkit>=11.0.3
   - dgl-cuda11.0=0.5.3
   - networkx>=2.4
   - pandas>=1.1.5
