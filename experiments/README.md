@@ -4,4 +4,4 @@ This module contains experiments for the ECML paper with all results included as
 
 All of these are standalone `jupyter` notebooks that (down)load their own data.
 
-The only requirement for rerunning all experiments is installing `ddagl`.
+The only requirement for rerunning all experiments is installing `ddagl` and possibly other libraries required to parse the original datasets, c.f. the [Installation Instructions](../README.md#installation).
