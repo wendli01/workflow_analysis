@@ -32,7 +32,7 @@ For comparison with state-of-the-art methods, implementations in [`karateclub`](
 It can be installed via
 > `pip install karateclub`
 
-While datasets are downloaded automatically in the notebooks using them, [NAS-bench-101](https://github.com/google-research/nasbench/blob/master/setup.py) requires [tensorflow](https://www.tensorflow.org/install) to load.
+While datasets are downloaded automatically in the notebooks using them, [NAS-bench-101](https://github.com/google-research/nasbench/blob/master/setup.py) requires [tensorflow](https://www.tensorflow.org/install) to load and parse the original NAS-bench-101 files.
 
 ## Use
 
