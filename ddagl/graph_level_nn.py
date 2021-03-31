@@ -122,7 +122,7 @@ def ktau_loss(y_true, y_pred) -> th.Tensor:
     return 1 - ktau
 
 
-def hinge_ranking_loss(y_true, y_pred, margin: float = 0.1):
+def hinge_ranking_loss(y_true, y_pred, margin: float = 0.05):
     """
     Wrapper for easier use of `th.nn.MarginRankingLoss`.
     :param y_true: target variable
