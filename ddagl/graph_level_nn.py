@@ -1,7 +1,7 @@
 """
 Poling Graph-Convolutional Neural Networks (P-GCNs) for various (un)supervised tasks.
 """
-
+import inspect
 import itertools
 import os
 from typing import Sequence, Tuple, Dict, List, Union, Optional
@@ -404,6 +404,10 @@ class PGCNEstimator(BaseEstimator):
         self.training_history_ = []
         self.random_state, self.rng_ = random_state, None
         self.global_node: bool = global_node
+
+    def get_params(self, **_):
+        attributes = inspect.getmembers(self, lambda a: not (inspect.isroutine(a)))
+        return {k: v for k, v in attributes if not (k.startswith('_') or k.endswith('_') or v == {})}
 
     def _get_model_outputs(self, graphs, features, **kwargs):
         def _to_device_tensor(a: Union[np.ndarray, _cs_matrix]) -> th.Tensor:
