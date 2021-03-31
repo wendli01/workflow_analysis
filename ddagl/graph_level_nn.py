@@ -136,7 +136,7 @@ def hinge_ranking_loss(y_true, y_pred, margin: float = 0.05):
     return th.nn.MarginRankingLoss(margin=margin)(true_pairs[0], true_pairs[1], target)
 
 
-class ResGCN(Module):
+class PGCN(Module):
     """
     Graph-Level Conv Net with pooling functions for aggregation.
 
@@ -191,7 +191,7 @@ class ResGCN(Module):
                  node_type_embedding_size: Optional[int] = None, global_node: bool = False,
                  hybrid_output: bool = False, hybrid_combination_fun: Optional[callable] = None,
                  activation_layer_cls=th.nn.ReLU):
-        super(ResGCN, self).__init__()
+        super(PGCN, self).__init__()
         if conv_kwargs is None:
             conv_kwargs = {}
         self.conv_layers_ = th.nn.ModuleList()
@@ -370,7 +370,7 @@ class ResGCN(Module):
                                          return_activations=return_activations)
 
 
-class ResGCNEstimator(BaseEstimator):
+class PGCNEstimator(BaseEstimator):
     """
 
 
@@ -400,7 +400,7 @@ class ResGCNEstimator(BaseEstimator):
                  random_state: Union[int, np.random.RandomState, int] = None, global_node: bool = False):
         self.device: str = device
         self.inference_batch_size: int = inference_batch_size
-        self.model_: Optional[ResGCN] = None
+        self.model_: Optional[PGCN] = None
         self.training_history_ = []
         self.random_state, self.rng_ = random_state, None
         self.global_node: bool = global_node
@@ -517,7 +517,7 @@ class ResGCNEstimator(BaseEstimator):
             os.environ['CUBLAS_WORKSPACE_CONFIG'] = ':4096:8'
 
 
-class SupervisedResGCN(ResGCNEstimator):
+class SupervisedPGCN(PGCNEstimator):
     """
     Graph Level Regressor. Takes graphs as inputs and performes regression on them. Node-level features are extracted
     from each graphs node attributes.
@@ -540,7 +540,7 @@ class SupervisedResGCN(ResGCNEstimator):
     weight_decay:
         weight decay coefficient for the optimizer.
     model_kwargs:
-        Keyword Arguments passed to the ResGCN for instantiating `self.model_`.
+        Keyword Arguments passed to the PGCN for instantiating `self.model_`.
     verbose:
         whether to print debug information
     device:
@@ -565,7 +565,7 @@ class SupervisedResGCN(ResGCNEstimator):
     ----------
 
     model_:
-        ResGCN
+        PGCN
     training_history_:
         List of Dictionaries for loss, valid and train scores calculated each epoch.
     """
@@ -577,15 +577,15 @@ class SupervisedResGCN(ResGCNEstimator):
                  lr_scheduler_cls=th.optim.lr_scheduler.ExponentialLR, lr_scheduler_kwargs=dict(gamma=0.95),
                  dense_layer_sizes=(64,), global_node: bool = False, inference_batch_size: int = 10000,
                  warm_start: bool = False, hybrid_output: bool = False, **model_kwargs):
-        super(SupervisedResGCN, self).__init__(device=device, random_state=random_state,
-                                               global_node=global_node, inference_batch_size=inference_batch_size)
+        super(SupervisedPGCN, self).__init__(device=device, random_state=random_state,
+                                             global_node=global_node, inference_batch_size=inference_batch_size)
         if model_kwargs is None:
             model_kwargs = {}
         self.optimizer_cls = optimizer_cls
         self.nb_epochs = nb_epochs
         self.lr = lr
         self.verbose = verbose
-        self.model_: ResGCN
+        self.model_: PGCN
         self.optimizer_: optimizer_cls
         self.lr_scheduler_: th.optim.lr_scheduler
         self.training_history_: List[Dict[str, float]]
@@ -611,9 +611,9 @@ class SupervisedResGCN(ResGCNEstimator):
         graphs, features = self._preprocess_input(*np.array(X, dtype=object).T)
 
         if not self.warm_start or self.model_ is None:
-            self.model_ = ResGCN(num_features=features[0].shape[-1], output_size=output_size,
-                                 dense_layer_sizes=self.dense_layer_sizes, global_node=self.global_node,
-                                 hybrid_output=self.hybrid_output, **self.model_kwargs)
+            self.model_ = PGCN(num_features=features[0].shape[-1], output_size=output_size,
+                               dense_layer_sizes=self.dense_layer_sizes, global_node=self.global_node,
+                               hybrid_output=self.hybrid_output, **self.model_kwargs)
             self.model_.to(self.device)
             self.training_history_ = []
             self.optimizer_ = self.optimizer_cls(self.model_.parameters(), lr=self.lr, weight_decay=self.weight_decay)
@@ -701,11 +701,11 @@ class SupervisedResGCN(ResGCNEstimator):
         return np.vstack(self.get_activations(X, layer_ind=layer_id).squeeze())
 
 
-class GraphLevelRegressor(SupervisedResGCN, RegressorMixin):
+class GraphLevelRegressor(SupervisedPGCN, RegressorMixin):
     def __init__(self, scoring=r2_score,
                  loss_criterion=combine_loss_criteria([th.nn.MSELoss(), hinge_ranking_loss], [.5, .5]), **model_kwargs):
         """
-        Graph level Res-GCN regressor.
+        Graph level P-GCN regressor.
 
         Parameters
         ----------
@@ -715,7 +715,7 @@ class GraphLevelRegressor(SupervisedResGCN, RegressorMixin):
         loss_criterion:
             loss criterion implementing `torch.nn.modules._WeightedLoss` that is used for gradient descent.
         model_kwargs:
-            Keyword Arguments passed to the ResGCN for instantiating `self.model_`.
+            Keyword Arguments passed to the PGCN for instantiating `self.model_`.
 
         Notes
         -----
@@ -729,16 +729,16 @@ class GraphLevelRegressor(SupervisedResGCN, RegressorMixin):
         return self._fit(X, y)
 
 
-class GraphLevelEmbedder(SupervisedResGCN, TransformerMixin):
+class GraphLevelEmbedder(SupervisedPGCN, TransformerMixin):
     def __init__(self, **model_kwargs):
         """
-        Graph level embedder using a randomly initialized Res-GCN.
+        Graph level embedder using a randomly initialized P-GCN.
 
         Parameters
         ----------
 
         model_kwargs:
-            Keyword Arguments passed to the ResGCN for instantiating `self.model_`.
+            Keyword Arguments passed to the PGCN for instantiating `self.model_`.
 
         Notes
         -----
@@ -755,11 +755,11 @@ class GraphLevelEmbedder(SupervisedResGCN, TransformerMixin):
         return self._get_transform(X)
 
 
-class GraphLevelClassifier(SupervisedResGCN, ClassifierMixin):
+class GraphLevelClassifier(SupervisedPGCN, ClassifierMixin):
     def __init__(self, scoring=lambda y, y_: f1_score(y, y_, average='micro'),
                  loss_criterion=th.nn.CrossEntropyLoss(), **model_kwargs):
         """
-        Graph level Res-GCN classifier.
+        Graph level P-GCN classifier.
 
         Parameters
         ----------
@@ -769,7 +769,7 @@ class GraphLevelClassifier(SupervisedResGCN, ClassifierMixin):
         loss_criterion:
             loss criterion implementing `torch.nn.modules._WeightedLoss` that is used for gradient descent.
         model_kwargs:
-            Keyword Arguments passed to the ResGCN for instantiating `self.model_`.
+            Keyword Arguments passed to the PGCN for instantiating `self.model_`.
 
         Notes
         -----
@@ -794,11 +794,11 @@ class GraphLevelClassifier(SupervisedResGCN, ClassifierMixin):
         return self._get_transform(X)
 
 
-class NodeLevelClassifier(SupervisedResGCN, ClassifierMixin):
+class NodeLevelClassifier(SupervisedPGCN, ClassifierMixin):
     def __init__(self, scoring=accuracy_score, loss_criterion=th.nn.CrossEntropyLoss(), loss_weighting: bool = False,
                  **model_kwargs):
         """
-        Node level Res-GCN classifier.
+        Node level P-GCN classifier.
 
         Parameters
         ----------
@@ -808,7 +808,7 @@ class NodeLevelClassifier(SupervisedResGCN, ClassifierMixin):
         loss_criterion:
             loss criterion implementing `torch.nn.modules._WeightedLoss` that is used for gradient descent.
         model_kwargs:
-            Keyword Arguments passed to the ResGCN for instantiating `self.model_`.
+            Keyword Arguments passed to the PGCN for instantiating `self.model_`.
 
         Notes
         -----
@@ -838,7 +838,7 @@ class NodeLevelClassifier(SupervisedResGCN, ClassifierMixin):
         return self._get_transform(X)
 
 
-class GroupedGraphEmbedder(ResGCNEstimator, TransformerMixin):
+class GroupedGraphEmbedder(PGCNEstimator, TransformerMixin):
     """
     Grouped Graph Level Embedder. Takes groups of graphs as inputs embeds them. Node-level features are extracted
     from each graphs node attributes.
@@ -866,7 +866,7 @@ class GroupedGraphEmbedder(ResGCNEstimator, TransformerMixin):
     weight_decay:
         weight decay coefficient for the optimizer.
     model_kwargs:
-        Keyword Arguments passed to the ResGCN for instantiating `self.model_`.
+        Keyword Arguments passed to the PGCN for instantiating `self.model_`.
     verbose:
         whether to print debug information
     device:
@@ -876,7 +876,7 @@ class GroupedGraphEmbedder(ResGCNEstimator, TransformerMixin):
     ----------
 
     model_:
-        ResGCN
+        PGCN
     training_history_:
         List of Dictionaries for loss, valid and train scores calculated each epoch.
 
@@ -902,7 +902,7 @@ class GroupedGraphEmbedder(ResGCNEstimator, TransformerMixin):
         self.lr = lr
         self.lr_decay = lr_decay
         self.verbose = verbose
-        self.model_: ResGCN
+        self.model_: PGCN
         self.training_history_: List[Dict[str, float]]
         self.loss_criterion = loss_criterion
         self.negatives_from_batch = negatives_from_batch
@@ -925,7 +925,7 @@ class GroupedGraphEmbedder(ResGCNEstimator, TransformerMixin):
 
         graphs_train, features_train = self._preprocess_input(*np.array(X, dtype=object).T)
 
-        self.model_ = ResGCN(num_features=features_train[0].shape[-1], output_size=None, **self.model_kwargs)
+        self.model_ = PGCN(num_features=features_train[0].shape[-1], output_size=None, **self.model_kwargs)
         self.model_.to(self.device)
         self.training_history_ = []
         optimizer = self.optimizer_cls(self.model_.parameters(), lr=self.lr, weight_decay=self.weight_decay)
