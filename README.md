@@ -62,10 +62,6 @@ graph_reg_pipeline.predict(X)
 ```
 
 
-Be advised that while the models in `graph_level_nn` implement `sklearn` estimators, they are **not** fully compatible.
-Specifically, their inheritance structure makes them **usuitable** for cloning via `get_params()` and `set_params()`, e.g.
-in `sklearn.model_selection.cross_val_score()`.
-
 ## Datasets
 
 - [NASBench: A Neural Architecture Search Dataset and Benchmark](https://github.com/google-research/nasbench), introduced in [NAS-Bench-101: Towards Reproducible Neural Architecture Search](https://arxiv.org/abs/1902.09635)

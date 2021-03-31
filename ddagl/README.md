@@ -2,9 +2,6 @@
 
 This module provides tools for unsupervised and supervised learning on DAGs.
 
-Be advised that while the models in `graph_level_nn` implement `sklearn` estimators, they are **not** fully compatible.
-Specifically, their inheritance structure makes them **usuitable** for cloning via `get_params()` and `set_params()`, e.g.
-in `sklearn.model_selection.cross_val_score()`.
 
 ---
 

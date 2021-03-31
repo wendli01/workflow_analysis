@@ -719,14 +719,7 @@ class GraphLevelRegressor(SupervisedPGCN, RegressorMixin):
         loss_criterion:
             loss criterion implementing `torch.nn.modules._WeightedLoss` that is used for gradient descent.
         model_kwargs:
-            Keyword Arguments passed to the PGCN for instantiating `self.model_`.
-
-        Notes
-        -----
-
-        This Estimators inheritance structure makes it usuitable for cloning via `get_params()` and `set_params()`,
-        e.g. in `sklearn.model_selection.cross_val_score()`.
-        """
+            Keyword Arguments passed to the PGCN for instantiating `self.model_`."""
         super().__init__(scoring=scoring, loss_criterion=loss_criterion, **model_kwargs)
 
     def fit(self, X: Sequence[Tuple[nx.DiGraph, np.ndarray]], y: Sequence):
@@ -742,14 +735,7 @@ class GraphLevelEmbedder(SupervisedPGCN, TransformerMixin):
         ----------
 
         model_kwargs:
-            Keyword Arguments passed to the PGCN for instantiating `self.model_`.
-
-        Notes
-        -----
-
-        This Estimators inheritance structure makes it usuitable for cloning via `get_params()` and `set_params()`,
-        e.g. in `sklearn.model_selection.cross_val_score()`.
-        """
+            Keyword Arguments passed to the PGCN for instantiating `self.model_`."""
         super().__init__(dense_layer_sizes=None, nb_epochs=0, **model_kwargs)
 
     def fit(self, X: Sequence[Tuple[nx.DiGraph, np.ndarray]], y):
@@ -774,12 +760,6 @@ class GraphLevelClassifier(SupervisedPGCN, ClassifierMixin):
             loss criterion implementing `torch.nn.modules._WeightedLoss` that is used for gradient descent.
         model_kwargs:
             Keyword Arguments passed to the PGCN for instantiating `self.model_`.
-
-        Notes
-        -----
-
-        This Estimators inheritance structure makes it usuitable for cloning via `get_params()` and `set_params()`,
-        e.g. in `sklearn.model_selection.cross_val_score()`.
         """
         super().__init__(scoring=scoring, loss_criterion=loss_criterion, **model_kwargs)
         self.label_encoder_ = LabelEncoder()
@@ -813,12 +793,6 @@ class NodeLevelClassifier(SupervisedPGCN, ClassifierMixin):
             loss criterion implementing `torch.nn.modules._WeightedLoss` that is used for gradient descent.
         model_kwargs:
             Keyword Arguments passed to the PGCN for instantiating `self.model_`.
-
-        Notes
-        -----
-
-        This Estimators inheritance structure makes it usuitable for cloning via `get_params()` and `set_params()`,
-        e.g. in `sklearn.model_selection.cross_val_score()`.
         """
         super().__init__(scoring=scoring, loss_criterion=loss_criterion, hybrid_output=True, **model_kwargs)
         self.label_encoder_ = LabelEncoder()
@@ -883,12 +857,6 @@ class GroupedGraphEmbedder(PGCNEstimator, TransformerMixin):
         PGCN
     training_history_:
         List of Dictionaries for loss, valid and train scores calculated each epoch.
-
-    Notes
-    -----
-
-    This Estimators inheritance structure makes it usuitable for cloning via `get_params()` and `set_params()`,
-    e.g. in `sklearn.model_selection.cross_val_score()`.
     """
 
     def __init__(self, nb_epochs=50, batch_size: int = 1000, shuffle_batches: bool = True,
