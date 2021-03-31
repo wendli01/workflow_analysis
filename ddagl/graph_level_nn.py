@@ -703,7 +703,7 @@ class SupervisedResGCN(ResGCNEstimator):
 
 class GraphLevelRegressor(SupervisedResGCN, RegressorMixin):
     def __init__(self, scoring=r2_score,
-                 loss_criterion=combine_loss_criteria([th.nn.MSELoss(), correlation_loss], [.5, .5]), **model_kwargs):
+                 loss_criterion=combine_loss_criteria([th.nn.MSELoss(), hinge_ranking_loss], [.5, .5]), **model_kwargs):
         """
         Graph level Res-GCN regressor.
 
