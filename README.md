@@ -1,7 +1,7 @@
 # Methods for automatic Machine-Learning Workflow Analysis
 
 
-This repository accompanies the ECML-PKDD paper [Methods for automatic Machine-Learning Workflow Analysis](https://2021.ecmlpkdd.org/wp-content/uploads/2021/07/sub_473.pdf).
+This repository accompanies the ECML PKDD 2021 paper [Methods for automatic Machine-Learning Workflow Analysis](https://2021.ecmlpkdd.org/wp-content/uploads/2021/07/sub_473.pdf).
 
 It contains all [code](ddagl) as well as [experimental setups](experiments) described in the paper including results as standalone `jupyter` notebooks.
 
@@ -66,4 +66,4 @@ graph_reg_pipeline.predict(X)
 
 - [NASBench: A Neural Architecture Search Dataset and Benchmark](https://github.com/google-research/nasbench), introduced in [NAS-Bench-101: Towards Reproducible Neural Architecture Search](https://arxiv.org/abs/1902.09635)
 
-- [ONE DATA Data Sience workflows](https://zenodo.org/record/4633704), introduced in [Methods for automatic Machine-Learning Workflow Analysis]()
+- [ONE DATA Data Sience workflows](https://zenodo.org/record/4633704), introduced in [Methods for automatic Machine-Learning Workflow Analysis](https://2021.ecmlpkdd.org/wp-content/uploads/2021/07/sub_473.pdf)
