@@ -67,3 +67,18 @@ graph_reg_pipeline.predict(X)
 - [NASBench: A Neural Architecture Search Dataset and Benchmark](https://github.com/google-research/nasbench), introduced in [NAS-Bench-101: Towards Reproducible Neural Architecture Search](https://arxiv.org/abs/1902.09635)
 
 - [ONE DATA Data Sience workflows](https://zenodo.org/record/4633704), introduced in [Methods for automatic Machine-Learning Workflow Analysis](https://2021.ecmlpkdd.org/wp-content/uploads/2021/07/sub_473.pdf)
+
+## Citation
+
+If you use the code, results or any other resources in this repository, please cite the following paper:
+
+```bibtex
+@inproceedings{wendlinger2021methods,
+  title={Methods for Automatic Machine-Learning Workflow Analysis},
+  author={Wendlinger, Lorenz and Berndl, Emanuel and Granitzer, Michael},
+  booktitle={Joint European Conference on Machine Learning and Knowledge Discovery in Databases},
+  pages={52--67},
+  year={2021},
+  organization={Springer}
+}
+```
